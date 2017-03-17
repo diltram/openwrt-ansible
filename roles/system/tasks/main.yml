@@ -1,0 +1,6 @@
+---
+- name: configure base system
+  uci: command=set key='system.@system[0].{{ item.key }}' value='{{ item.value }}'
+  with_dict:
+    '{{ system }}'
+  notify: uci commit
