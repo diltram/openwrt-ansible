@@ -4,6 +4,7 @@
   user: root
   gather_facts: no
   roles:
+    - bootstrap
     - system
     - ntp
     - ddns

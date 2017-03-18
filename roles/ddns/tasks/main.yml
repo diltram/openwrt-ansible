@@ -1,5 +1,5 @@
 ---
-- name: configure global congis
+- name: configure global config
   uci: command=set key='ddns.global.{{ item.key }}' value='{{ item.value }}'
   with_dict:
     '{{ ddns.global }}'
@@ -15,12 +15,16 @@
     - ddns reload
     - uci commit
 
-- name: 'configure ddns service named {{ item.key }}'
-  include: loop_over_config.yml
+- name: configure ddns services
+  include_role: 
+    name: utils
+    tasks_from: loop_over_config
   with_dict:
     '{{ ddns.configs }}'
   loop_control:
     loop_var: config
+  vars:
+    key: ddns
   notify:
     - ddns reload
     - uci commit

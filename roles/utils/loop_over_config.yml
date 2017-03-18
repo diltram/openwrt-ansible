@@ -1,8 +1,0 @@
----
-- name: 'configure config for {{ config.key }}'
-  uci: command=set key='ddns.{{ config.key }}.{{ item.key }}' value='{{ item.value }}'
-  with_dict:
-    '{{ config.value }}'
-  notify:
-    - ddns reload
-    - uci commit

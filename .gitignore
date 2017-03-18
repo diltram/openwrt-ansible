@@ -3,3 +3,4 @@
 .librarian
 tmp
 librarian_roles
+.vault_pass.txt
