@@ -1,0 +1,31 @@
+---
+ddns:
+  configs:
+    home_ipv4:
+      service_name: cloudflare.com
+      use_https: 1
+      lookup_host: openwrt.home.diltram.net
+      domain: openwrt.home.diltram.net
+      name: openwrt.home
+      username: diltram@gmail.com
+      password: '{{ vault_cloudflare_pass }}'
+      interface: wan
+      ip_source: network
+      ip_network: wan
+      use_ipv6: 0
+      cacert: '/etc/ssl/certs'
+      enabled: 1
+    home_ipv6:
+      service_name: cloudflare.com
+      use_https: 1
+      lookup_host: openwrt.home.diltram.net
+      domain: openwrt.home.diltram.net
+      name: openwrt.home
+      username: diltram@gmail.com
+      password: '{{ vault_cloudflare_pass }}'
+      interface: wan6
+      ip_source: network6
+      ip_network: wan6
+      use_ipv6: 1
+      cacert: '/etc/ssl/certs'
+      enabled: 1
