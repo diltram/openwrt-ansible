@@ -1,5 +1,5 @@
 ---
-- name: 'configure options for {{ config.key }}'
+- name: '{{ key }} : configure options for {{ config.key }}'
   uci: command=set key='{{ key }}.{{ config.key }}.{{ item.key }}' value='{{ item.value }}'
   with_dict:
     '{{ config.value }}'

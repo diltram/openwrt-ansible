@@ -1,0 +1,21 @@
+---
+- name: configure global settings
+  uci: command=set key='dhcp.@dnsmasq[0].{{ item.key }}' value='{{ item.value }}'
+  with_dict:
+    '{{ dhcp.global }}'
+  notify:
+    - uci commit
+
+- name: configure DNS servers
+  uci: command=add_list key='dhcp.@dnsmasq[0].server' value='{{ item }}'
+  with_items:
+    '{{ dhcp.dns_servers }}'
+  notify:
+    - uci commit
+
+- name: configure static hosts
+  uci: command=set key='dhcp.@host[3].name' value='{{ item }}'
+  with_dict:
+    '{{ dhcp.hosts }}'
+  notify:
+    - uci commit

@@ -1,0 +1,35 @@
+---
+dhcp:
+  global:
+    domainneeded: 1
+    boguspriv: 1
+    localise_queries: 1
+    rebind_protection: 1
+    rebind_localhost: 1
+    local: '/local/'
+    domain: 'local'
+    expandhosts: 1
+    authoritative: 1
+    readethers: 1
+    localservice: 1
+  dns_servers:
+    - 8.8.8.8
+    - 8.8.4.4
+    - 2001:4860:4860::8888
+    - 2001:4860:4860::8844
+  dhcp_instances:
+    lan:
+      interface: lan
+      start: 100
+      limit: 150
+      leastime: 12h
+      dhcpv6: server
+      ra: server
+      force: 1
+      ra_management: 1
+    wan:
+      interface: wan
+      ignore: 1
+  hosts:
+  domain:
+  cname:
