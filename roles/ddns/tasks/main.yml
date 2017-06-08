@@ -4,16 +4,16 @@
   with_dict:
     '{{ ddns.global }}'
   notify:
-    - ddns reload
     - uci commit
+    - ddns reload
 
 - name: configure required services
   uci: command=set key='ddns.{{ item.key }}' value=service
   with_dict:
     '{{ ddns.configs }}'
   notify:
-    - ddns reload
     - uci commit
+    - ddns reload
 
 - name: configure ddns services
   include_role: 
@@ -26,5 +26,5 @@
   vars:
     key: ddns
   notify:
-    - ddns reload
     - uci commit
+    - ddns reload
