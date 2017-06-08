@@ -1,13 +1,15 @@
 ---
+hostname: openwrt
+fqdn: '{{ hostname }}.{{ domain }}'
 ddns:
   configs:
     home_ipv4:
+      name: openwrt.home
       service_name: cloudflare.com
       use_https: 1
-      lookup_host: openwrt.home.diltram.net
-      domain: openwrt.home.diltram.net
-      name: openwrt.home
-      username: diltram@gmail.com
+      lookup_host: '{{ fqdn }}'
+      domain: '{{ fqdn }}'
+      username: '{{ vault_cloudflare_user }}'
       password: '{{ vault_cloudflare_pass }}'
       interface: wan
       ip_source: network
@@ -16,12 +18,12 @@ ddns:
       cacert: '/etc/ssl/certs'
       enabled: 1
     home_ipv6:
+      name: openwrt.home
       service_name: cloudflare.com
       use_https: 1
-      lookup_host: openwrt.home.diltram.net
-      domain: openwrt.home.diltram.net
-      name: openwrt.home
-      username: diltram@gmail.com
+      lookup_host: '{{ fqdn }}'
+      domain: '{{ fqdn }}'
+      username: '{{ vault_cloudflare_user }}'
       password: '{{ vault_cloudflare_pass }}'
       interface: wan6
       ip_source: network6
@@ -29,3 +31,26 @@ ddns:
       use_ipv6: 1
       cacert: '/etc/ssl/certs'
       enabled: 1
+dhcp:
+  global:
+    local: '/{{ domain }}/'
+    domain: '{{ domain }}'
+  dns_servers:
+    - 207.69.188.171
+    - 2001:470:20::2
+  dhcp_instances:
+    guest:
+      interface: guest
+      start: 50
+      limit: 100
+      leasetime: 1h
+  hosts:
+    - name: diltram
+      mac: '64:76:ba:b1:99:0e'
+      ip: '192.168.1.10'
+    - name: monitoring
+      mac: '6e:1b:6b:0e:6b:69'
+      ip: '192.168.1.3'
+    - name: apple-tv
+      mac: 'd0:03:4b:3a:80:9b'
+      ip: '192.168.1.11'

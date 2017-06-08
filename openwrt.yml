@@ -1,6 +1,6 @@
 ---
-- name: configure an openwrt system
-  hosts: openwrt
+- name: configure edge openwrt system
+  hosts: edge
   user: root
   gather_facts: no
   roles:
