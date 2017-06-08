@@ -1,12 +1,17 @@
 ---
-- name: 'add new config group for host {{ config.name }}'
+- name: 'add new config group for host {{ config.1.name }}'
   uci: command=add key='dhcp host'
   notify:
     - uci commit
+  when: (static_hosts_count.stdout | int) <= config.0
+  tags:
+    - dhcp
 
-- name: 'configure options for host {{ config.name }}'
-  uci: command=set key='dhcp.@host[-1].{{ item.key }}' value='{{ item.value }}'
+- name: 'configure options for host {{ config.1.name }}'
+  uci: command=set key='dhcp.@host[{{ config.0 }}].{{ item.key }}' value='{{ item.value }}'
   with_dict:
-    '{{ config }}'
+    '{{ config.1 }}'
   notify:
     - uci commit
+  tags:
+    - dhcp

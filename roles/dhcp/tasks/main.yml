@@ -19,34 +19,6 @@
   tags:
     - dhcp
 
-- name: count all configured static hosts
-  raw: 'uci show dhcp | grep "=host" | wc -l'
-  register: static_hosts_count
-  tags:
-    - dhcp
-
-- name: remove all existing static hosts
-  uci: command='delete' key='dhcp.@host[0]'
-  with_sequence:
-    - 'count={{ static_hosts_count.stdout | int }}'
-  notify:
-    - uci commit
-    - dhcp reload
-  tags:
-    - dhcp
-
-- name: configure static hosts
-  include: add_static_hosts.yml
-  with_items:
-    '{{ dhcp.hosts }}'
-  loop_control:
-    loop_var: config
-  notify:
-    - uci commit
-    - dhcp reload
-  tags:
-    - dhcp
-
 - name: configure all dhcp instances
   include_role:
     name: utils
@@ -57,6 +29,25 @@
     loop_var: config
   vars:
     key: dhcp
+  notify:
+    - uci commit
+    - dhcp reload
+  tags:
+    - dhcp
+
+- name: count all configured static hosts
+  raw: 'uci show dhcp | grep "=host" | wc -l'
+  register: static_hosts_count
+  changed_when: static_hosts_count.stdout | int == 0
+  tags:
+    - dhcp
+
+- name: configure static hosts
+  include: add_static_hosts.yml
+  with_indexed_items:
+    '{{ dhcp.hosts }}'
+  loop_control:
+    loop_var: config
   notify:
     - uci commit
     - dhcp reload
