@@ -22,7 +22,7 @@ dhcp:
       interface: lan
       start: 100
       limit: 150
-      leastime: 12h
+      leasetime: 24h
       dhcpv6: server
       ra: server
       force: 1

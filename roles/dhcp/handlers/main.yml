@@ -1,0 +1,3 @@
+---
+- name: dhcp reload
+  raw: /etc/init.d/dnsmasq reload

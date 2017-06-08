@@ -1,0 +1,12 @@
+---
+- name: 'add new config group for host {{ config.name }}'
+  uci: command=add key='dhcp host'
+  notify:
+    - uci commit
+
+- name: 'configure options for host {{ config.name }}'
+  uci: command=set key='dhcp.@host[-1].{{ item.key }}' value='{{ item.value }}'
+  with_dict:
+    '{{ config }}'
+  notify:
+    - uci commit

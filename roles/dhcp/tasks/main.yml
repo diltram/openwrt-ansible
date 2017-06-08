@@ -5,6 +5,9 @@
     '{{ dhcp.global }}'
   notify:
     - uci commit
+    - dhcp reload
+  tags:
+    -dhcp
 
 - name: configure DNS servers
   uci: command=add_list key='dhcp.@dnsmasq[0].server' value='{{ item }}'
@@ -12,10 +15,50 @@
     '{{ dhcp.dns_servers }}'
   notify:
     - uci commit
+    - dhcp reload
+  tags:
+    - dhcp
 
-- name: configure static hosts
-  uci: command=set key='dhcp.@host[3].name' value='{{ item }}'
-  with_dict:
-    '{{ dhcp.hosts }}'
+- name: count all configured static hosts
+  raw: 'uci show dhcp | grep "=host" | wc -l'
+  register: static_hosts_count
+  tags:
+    - dhcp
+
+- name: remove all existing static hosts
+  uci: command='delete' key='dhcp.@host[0]'
+  with_sequence:
+    - 'count={{ static_hosts_count.stdout | int }}'
   notify:
     - uci commit
+    - dhcp reload
+  tags:
+    - dhcp
+
+- name: configure static hosts
+  include: add_static_hosts.yml
+  with_items:
+    '{{ dhcp.hosts }}'
+  loop_control:
+    loop_var: config
+  notify:
+    - uci commit
+    - dhcp reload
+  tags:
+    - dhcp
+
+- name: configure all dhcp instances
+  include_role:
+    name: utils
+    tasks_from: loop_over_config
+  with_dict:
+    '{{ dhcp.dhcp_instances }}'
+  loop_control:
+    loop_var: config
+  vars:
+    key: dhcp
+  notify:
+    - uci commit
+    - dhcp reload
+  tags:
+    - dhcp
