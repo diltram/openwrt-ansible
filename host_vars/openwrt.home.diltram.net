@@ -35,9 +35,6 @@ dhcp:
   global:
     local: '/{{ domain }}/'
     domain: '{{ domain }}'
-  dns_servers:
-    - 207.69.188.171
-    - 2001:470:20::2
   dhcp_instances:
     guest:
       interface: guest
