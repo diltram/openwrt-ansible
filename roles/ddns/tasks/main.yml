@@ -6,6 +6,8 @@
   notify:
     - uci commit
     - ddns reload
+  tags:
+    - ddns
 
 - name: configure required services
   uci: command=set key='ddns.{{ item.key }}' value=service
@@ -14,6 +16,8 @@
   notify:
     - uci commit
     - ddns reload
+  tags:
+    - ddns
 
 - name: configure ddns services
   include_role: 
@@ -28,3 +32,5 @@
   notify:
     - uci commit
     - ddns reload
+  tags:
+    - ddns

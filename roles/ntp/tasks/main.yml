@@ -1,12 +1,18 @@
 ---
 - name: configure ntp service
   uci: command=set key='system.ntp.enabled' value='{{ ntp.enable }}'
+  tags:
+    - ntp
 
 - name: configure ntp server
   uci: command=set key='system.ntp.enable_server' value='{{ ntp.enable_server }}'
+  tags:
+    - ntp
 
 - name: set ntp servers
   uci: command=add_list key='system.ntp.server' value='{{ item }}'
   with_items:
     '{{ ntp.servers }}'
   notify: uci commit
+  tags:
+    - ntp

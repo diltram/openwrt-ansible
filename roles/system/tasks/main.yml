@@ -4,3 +4,5 @@
   with_dict:
     '{{ system }}'
   notify: uci commit
+  tags:
+    - base
