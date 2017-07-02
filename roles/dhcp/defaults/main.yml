@@ -6,8 +6,8 @@ dhcp:
     localise_queries: 1
     rebind_protection: 1
     rebind_localhost: 1
-    local: '/local/'
-    domain: 'local'
+    local: "/local/"
+    domain: "local"
     expandhosts: 1
     authoritative: 1
     readethers: 1

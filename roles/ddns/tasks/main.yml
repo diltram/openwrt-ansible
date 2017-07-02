@@ -1,8 +1,8 @@
 ---
 - name: configure global config
-  uci: command=set key='ddns.global.{{ item.key }}' value='{{ item.value }}'
+  uci: command=set key="ddns.global.{{ item.key }}" value="{{ item.value }}"
   with_dict:
-    '{{ ddns.global }}'
+    "{{ ddns.global }}"
   notify:
     - uci commit
     - ddns reload
@@ -10,9 +10,9 @@
     - ddns
 
 - name: configure required services
-  uci: command=set key='ddns.{{ item.key }}' value=service
+  uci: command=set key="ddns.{{ item.key }}" value=service
   with_dict:
-    '{{ ddns.configs }}'
+    "{{ ddns.configs }}"
   notify:
     - uci commit
     - ddns reload
@@ -24,7 +24,7 @@
     name: utils
     tasks_from: loop_over_config
   with_dict:
-    '{{ ddns.configs }}'
+    "{{ ddns.configs }}"
   loop_control:
     loop_var: config
   vars:

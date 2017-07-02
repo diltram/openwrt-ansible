@@ -1,8 +1,25 @@
 ---
 - name: configure global settings
-  uci: command=set key='dhcp.@dnsmasq[0].{{ item.key }}' value='{{ item.value }}'
+  uci: command=set key="dhcp.@dnsmasq[0].{{ item.key }}" value="{{ item.value }}"
   with_dict:
-    '{{ dhcp.global }}'
+    "{{ dhcp.global }}"
+  notify:
+    - uci commit
+    - dhcp reload
+  tags:
+    - dhcp
+
+- name: check currently configured DNS servers
+  raw: uci get dhcp.\@dnsmasq\[0\].server
+  register: existing_dns_servers
+  changed_when: existing_dns_servers.stdout_lines[0].split(" ") | difference(dhcp.dns_servers)
+  tags:
+    - dhcp
+
+- name: remove DNS servers not configured any more
+  uci: command=del_list key="dhcp.@dnsmasq[0].server" value="{{ item }}"
+  with_items:
+    - "{{ existing_dns_servers.stdout_lines[0].split(' ') | difference(dhcp.dns_servers) }}"
   notify:
     - uci commit
     - dhcp reload
@@ -10,9 +27,9 @@
     - dhcp
 
 - name: configure DNS servers
-  uci: command=add_list key='dhcp.@dnsmasq[0].server' value='{{ item }}'
+  uci: command=add_list key="dhcp.@dnsmasq[0].server" value="{{ item }}"
   with_items:
-    '{{ dhcp.dns_servers }}'
+    - "{{ dhcp.dns_servers }}"
   notify:
     - uci commit
     - dhcp reload
@@ -24,7 +41,7 @@
     name: utils
     tasks_from: loop_over_config
   with_dict:
-    '{{ dhcp.dhcp_instances }}'
+    "{{ dhcp.dhcp_instances }}"
   loop_control:
     loop_var: config
   vars:
@@ -36,7 +53,7 @@
     - dhcp
 
 - name: count all configured static hosts
-  raw: 'uci show dhcp | grep "=host" | wc -l'
+  raw: "uci show dhcp | grep '=host' | wc -l"
   register: static_hosts_count
   changed_when: static_hosts_count.stdout | int == 0
   tags:
@@ -45,7 +62,7 @@
 - name: configure static hosts
   include: add_static_hosts.yml
   with_indexed_items:
-    '{{ dhcp.hosts }}'
+    - "{{ dhcp.hosts }}"
   loop_control:
     loop_var: config
   notify:

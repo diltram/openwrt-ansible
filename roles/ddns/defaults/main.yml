@@ -1,20 +1,20 @@
 ---
 ddns:
   global:
-    date_format: '%F %R'
+    date_format: "%F %R"
     log_lines: 250
     allow_local_ip: 0
   configs:
     home_ipv4:
       service_name: cloudflare.com
       use_https: 0
-      lookup_host: ''
-      domain: ''
-      name: ''
-      username: ''
-      password: ''
+      lookup_host: ""
+      domain: ""
+      name: ""
+      username: ""
+      password: ""
       interface: wan
       ip_source: network
       ip_network: wan
-      cacert: ''
+      cacert: ""
       enabled: 0
