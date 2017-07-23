@@ -9,10 +9,16 @@
   tags:
     - dhcp
 
+- name: check if there is currently DNS servers configuration
+  raw: uci show dhcp | grep \\.server
+  register: dns_configured
+  failed_when: dns_configured.rc > 1
+
 - name: check currently configured DNS servers
   raw: uci get dhcp.\@dnsmasq\[0\].server
   register: existing_dns_servers
   changed_when: existing_dns_servers.stdout_lines[0].split(" ") | difference(dhcp.dns_servers)
+  when: dns_configured.rc == 0
   tags:
     - dhcp
 
@@ -20,6 +26,7 @@
   uci: command=del_list key="dhcp.@dnsmasq[0].server" value="{{ item }}"
   with_items:
     - "{{ existing_dns_servers.stdout_lines[0].split(' ') | difference(dhcp.dns_servers) }}"
+  when: dns_configured.rc == 0
   notify:
     - uci commit
     - dhcp reload
